@@ -25,22 +25,23 @@
 			background: yellow;
 		}
 
-	</style>
-	<script src="lib/angular/angular.js"></script>
+		</style>
+		<script src="lib/angular/angular.js"></script>
 	<script>
 		angular.module("listaTelefonica",[]);
-		angular.module("listaTelefonica").controller("listaTelefonicaCtrl", function($scope){
+		angular.module("listaTelefonica").controller("listaTelefonicaCtrl", function($scope, uppercaseFilter){
 			$scope.app = "Lista Telefônica";
 			$scope.contatos = [
+			//{nome: uppercaseFilter("Jefferson"), telefone: "40028922", operadora:{"nome":"Vivo","codigo":21}, cor:"blue"},
 			{nome: "Jefferson", telefone: "40028922", operadora:{"nome":"Vivo","codigo":21}, cor:"blue"},
 			{nome: "Ian", telefone: "99653011", operadora:{"nome":"Vivo","codigo":21}, cor:"red"},
 			{nome: "Teste", telefone: "99996666", operadora:{"nome":"Vivo","codigo":21}, cor:"green"}
 			];
 
 			$scope.operadoras = [
-			{nome: "Oi", codigo: 31},
-			{nome: "Vivo", codigo: 21},
-			{nome: "Tim", codigo: 41}
+			{nome: "Oi", codigo: 31, preco:4},
+			{nome: "Vivo", codigo: 21, preco:3},
+			{nome: "Tim", codigo: 41, preco:2}
 			];
 
 			$scope.cores = [
@@ -72,22 +73,27 @@
 				
 				});
 			};
-			
-			
+			$scope.ordenarPor = function(campo){
+				$scope.criterioDeOrdenacao = campo;
+				$scope.direcaoDaOrdenacao = !$scope.direcaoDaOrdenacao;
+
+			}
 		});
 	</script>
 </head>
 <body ng-controller="listaTelefonicaCtrl">
 	<div class="jumbotron">
 		<h3>{{app}}</h3>
+		<input  class="form-control" type="text" ng-model="criterioDeBusca" name="busca" placeholder="Quem você esta buscanto?">
 		<table class="table">
 			<tr>
 				<th></th>
-				<th>Nome</th>
-				<th>Telefone</th>
-				<th>Operadora</th>
+				<th><a href="" ng-click="ordenarPor('nome')"> Nome</a></th>
+				<th><a href="" ng-click="ordenarPor('telefone')"> Telefone</a></th>
+				<th><a href="" ng-click="ordenarPor('operadora')"> Operadora</a></th>
 			</tr>
-			<tr ng-class="{selecionado: contato.selecionado}" ng-repeat="contato in contatos">
+			<tr ng-class="{selecionado: contato.selecionado}" 
+				ng-repeat="contato in contatos | filter:{nome: criterioDeBusca} | orderBy:criterioDeOrdenacao:direcaoDaOrdenacao">
 				<td><input type="checkbox" ng-model="contato.selecionado"></td>
 				<td>{{contato.nome}}</td>
 				<td>{{contato.telefone}}</td>
